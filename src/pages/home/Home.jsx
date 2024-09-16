@@ -9,10 +9,6 @@ const Home = () => {
   const [gastos, setGastos] = useState([]);
   const [pagos, setPagos] = useState([]);
 
-  // Función para recalcular los pagos
-
-  
-  // Cargar gastos iniciales
   useEffect(() => {
     const getGastos = async () => {
       try {
@@ -21,7 +17,7 @@ const Home = () => {
         );
        
         setGastos(response.data);
-        recalcularPagos(response.data); // Calcular pagos después de cargar los gastos
+        recalcularPagos(response.data);
       } catch (error) {
         console.error("Error al cargar los gastos:", error);
       }
@@ -29,16 +25,15 @@ const Home = () => {
     getGastos();
   }, []);
 
-  // Actualizar los pagos cuando cambian los gastos
+
   useEffect(() => {
     recalcularPagos(gastos);
   }, [gastos]);
   const recalcularPagos = (gastosActualizados) => {
     // console.log("linea1",gastosActualizados);
     
-    // Convertir el gasto a número y calcular el total por persona
     const totalPorPersona = gastosActualizados.reduce((acc, item) => {
-      const gastoNumero = Number(item.gasto); // Convertir gasto a número
+      const gastoNumero = Number(item.gasto); 
       if (isNaN(gastoNumero)) {
         console.error(`Gasto no es un número para el ítem ${item.id}: ${item.gasto}`);
         return acc;
@@ -50,9 +45,7 @@ const Home = () => {
       return acc;
     }, {});
   
-    // console.log("Total por persona:", totalPorPersona); // Depuración
-  
-    // Calcular el total de gastos y el gasto promedio
+    // console.log("Total por persona:", totalPorPersona); /
     const totalGastos = Object.values(totalPorPersona).reduce(
       (acc, gasto) => acc + gasto,
       0
@@ -63,7 +56,6 @@ const Home = () => {
     // console.log("Total gastos:", totalGastos); // Depuración
     // console.log("Gasto promedio:", gastoPromedio); // Depuración
   
-    // Calcular las diferencias entre el gasto de cada persona y el gasto promedio
     const diferencias = Object.entries(totalPorPersona).map(
       ([nombre, total]) => ({
         nombre,
@@ -71,19 +63,18 @@ const Home = () => {
       })
     );
   
-    // console.log("Diferencias:", diferencias); // Depuración
-  
-    // Filtrar deudores y acreedores
+    // console.log("Diferencias:", diferencias); 
+ 
     let deudores = diferencias
       .filter((d) => d.diferencia < 0)
       .map((d) => ({ ...d, diferencia: Math.abs(d.diferencia) }));
   
     let acreedores = diferencias.filter((d) => d.diferencia > 0);
   
-    // console.log("Deudores:", deudores); // Depuración
-    // console.log("Acreedores:", acreedores); // Depuración
+    // console.log("Deudores:", deudores); 
+    // console.log("Acreedores:", acreedores); 
   
-    // Calcular los pagos entre deudores y acreedores
+   
     const pagos = [];
     while (deudores.length > 0 && acreedores.length > 0) {
       const deudor = deudores[0];
@@ -107,7 +98,7 @@ const Home = () => {
       }
     }
   
-    // console.log("Pagos calculados:", pagos); // Depuración
+    // console.log("Pagos calculados:", pagos); 
   
     setPagos(pagos);
   };
